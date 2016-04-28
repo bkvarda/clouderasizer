@@ -1,0 +1,1 @@
+#Holder for storage targets. The idea is to make an extensible number of storage targets. Current ideas: local, google drive, box, HDFS, Kafka, REST Server (POST Request), and PPT (output to canned PPT).

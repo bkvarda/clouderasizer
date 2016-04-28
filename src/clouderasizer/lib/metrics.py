@@ -8,8 +8,9 @@ def output_json(ts_list):
     print json
     return json
 
-#returns a collection with CSV formatted rows
+#returns a collection of collections with CSV formatted rows
 def output_csv(ts_list):
+    csvs = deque()
     for ts in ts_list.timeSeries:
         csv = deque()
         header =  "timestamp" + "," + "min" + "," + "max" + "," +  str(ts.metadata.metricName) + "(" + str(ts.metadata.unitNumerators[0]) + ")"
@@ -17,9 +18,9 @@ def output_csv(ts_list):
         for point in ts.data:
             row = str(point.timestamp.isoformat()) + "," + str(point.aggregateStatistics.min) + "," + str(point.aggregateStatistics.max) + "," + str(point.value)
             csv.append(row)
-    print csv
-    return csv
-
+        csvs.append(csv)
+    print csvs
+    return csvs
 
 #saves data to specified location
 def save_data(ts_list,location):
