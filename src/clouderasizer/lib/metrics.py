@@ -1,26 +1,25 @@
+import json
 from cm_api.api_client import ApiResource
 from collections import deque
 
 #returns a json data object
 def output_json(ts_list):
-    print ''
+    json = ts_list.to_json_dict(preserve_ro=True)
+    print json
+    return json
 
 #returns a collection with CSV formatted rows
 def output_csv(ts_list):
     for ts in ts_list.timeSeries:
-        data = deque()
+        csv = deque()
         header =  "timestamp" + "," + "min" + "," + "max" + "," +  str(ts.metadata.metricName) + "(" + str(ts.metadata.unitNumerators[0]) + ")"
-        data.append(header)
+        csv.append(header)
         for point in ts.data:
             row = str(point.timestamp.isoformat()) + "," + str(point.aggregateStatistics.min) + "," + str(point.aggregateStatistics.max) + "," + str(point.value)
-            data.append(row)
-    return data
+            csv.append(row)
+    print csv
+    return csv
 
-#prints collection rows out to console
-def output_console(data):
-    for row in data:
-        print row
-    
 
 #saves data to specified location
 def save_data(ts_list,location):
@@ -58,4 +57,4 @@ def collect_metrics(cm,cluster_name,metrics,start_date,end_date,service_name,out
     elif(output_format == 'CSV'):
         output_csv(ts_list)
     else:
-        output_console(output_csv(ts_list))
+        (output_csv(ts_list))
