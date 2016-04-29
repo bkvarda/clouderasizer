@@ -1,9 +1,12 @@
-### Multipurpose tool for discovering and collecting metrics from Cloudera Manager Hadoop clusters.
+#### Multipurpose tool for discovering and collecting metrics from Cloudera Manager Hadoop clusters.
 
-####Usage
+#####Usage
 TBD.
 
-####Examples
+#####Collections
+Series of metrics that are defined and should be collected together.
+
+#####Examples
 Current Options:
 ```
 usage: clouderasizer.py [-h] [--username USERNAME] [--password PASSWORD]
