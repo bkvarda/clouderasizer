@@ -1,0 +1,30 @@
+[
+  {
+   "metric_name": "some_metric",
+   "start_time": "some_time",
+   "end_time": "end_time",
+   "service_name": "YARN",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "some_metric",
+   "start_time": "some_time",
+   "end_time": "end_time",
+   "service_name": "YARN",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "some_metric",
+   "start_time": "some_time",
+   "end_time": "end_time",
+   "service_name": "YARN",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "some_metric",
+   "start_time": "some_time",
+   "end_time": "end_time",
+   "service_name": "YARN",
+   "output_as": "JSON"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+   "metric_name": "total_cpu_system_rate_across_hosts",
+   "service_name": "None",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_dfs_capacity_used_across_datanodes",
+   "service_name": "HDFS",
+   "output_as": "JSON"
+  }
+]

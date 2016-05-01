@@ -7,6 +7,7 @@ class Config:
         self.logging_dir=Config.get('Directories','LoggingDirectory')
         self.temp_dir=Config.get('Directories','TempDirectory')
         self.output_dir=Config.get('Directories','OutputDirectory')
+        self.collectionplan_dir=Config.get('Directories','CollectionPlanDirectory')
         self.cloudera_manager_name=Config.get('Cloudera','ClouderaManager')
         self.cloudera_cluster_name=Config.get('Cloudera','ClusterName')
         self.cloudera_username=Config.get('Cloudera','UserName')
@@ -19,3 +20,5 @@ class Config:
             os.makedirs(self.logging_dir)
         if not os.path.isdir(self.output_dir):
             os.makedirs(self.output_dir)
+        if not os.path.isdir(self.collectionplan_dir):
+            os.makedirs(self.collectionplan_dir)
