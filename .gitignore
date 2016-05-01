@@ -20,3 +20,5 @@
 **/temp/*
 capycityplanr/temp/*
 *.sh
+src/clouderasizer/output/*
+src/clouderasizer/output/*/*
