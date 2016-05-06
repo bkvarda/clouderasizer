@@ -34,6 +34,9 @@ def do_collectionplan(args):
     else:
         sys.exit(0)
 
+def do_pptplan(args):
+    print ''
+
 def main():
     #Config and logging
     configuration = config.Config('configs/clouderasizer.conf')
@@ -90,8 +93,10 @@ def main():
     parser_collection.add_argument('--collectionplan_dir',help='The path where collectionplans are kept',default=collectionplan_dir)
     parser_collection.set_defaults(func=do_collectionplan)
    
-    #tsql subparser
-    parser_tsql = subparsers.add_parser('tsql', help='Build a TSQL query for running your own API calls')
+    #pptplan subparser
+    parser_pptplan = subparsers.add_parser('pptplan', help='Generate a PPT from a collection generated from collectionplan')
+    parser_pptplan = subparsers.add_parser('--generate', help='Generate a PPT from a collection. Takes a collection .zip as argument')
+    parser_pptplan.set_defaults(func=do_pptplan)
 
     args = parser.parse_args() 
     

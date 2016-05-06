@@ -1,4 +1,4 @@
-import json
+import json, logging
 from cm_api.api_client import ApiResource
 from collections import deque
 
@@ -36,11 +36,14 @@ def save_as_json(ts_list, output_dir):
     attributes = metadata['attributes']
     save_file =  output_dir + '/' + metadata['metricName'] + '.json'
     with open(save_file, 'w') as outfile:
+        logging.info("Saving JSON formatted file for metric " + metadata['metricName'] + " in location " + save_file)
         json.dump(data,outfile)
 
-#saves data to specified location
-def save_data(ts_list,location):
-   print ''
+#reads metric data from JSON file
+def read_from_json(file):
+    logging.info("Reading JSON data from " + file)
+    return json.load(file)
+
 
 #finds available metrics based on one or more search terms
 def find_metrics(cm,search_terms):
@@ -62,10 +65,12 @@ def find_metrics(cm,search_terms):
 
 #collects metrics and executes output function based on output_format input.
 def collect_metrics(cm,cluster_name,metrics,start_date,end_date,service_name,output_format,output_dir):
+    logging.info("Collecting metrics for the following: " + str(metrics))
     metric_string = ','.join(metrics)
     select_string = 'SELECT ' + metric_string + ' WHERE clusterName = ' + '"'+ cluster_name +'"'
     if service_name!='None':
         select_string = select_string + ' AND serviceName = ' + '"'+ service_name + '"'
+    logging.info("Query string for metric collection was: " + select_string)
     result = cm.query_timeseries(select_string,start_date,end_date)
     ts_list = result[0]
     #We now have our raw metric data, fork off depending on output format
