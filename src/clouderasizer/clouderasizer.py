@@ -1,5 +1,5 @@
 import logging, sys, argparse, time, datetime
-from lib import metrics, config, collectionplan
+from lib import metrics, config, collectionplan, pptplan
 from cm_api.api_client import ApiResource
 
 #Connects to CM using provided (or configured) credentials and returns the Api object
@@ -35,7 +35,10 @@ def do_collectionplan(args):
         sys.exit(0)
 
 def do_pptplan(args):
-    print ''
+    
+   if(args.generate):
+       pptplan.create_ppt(args.generate,args.output_dir)
+       sys.exit(0)
 
 def main():
     #Config and logging
@@ -95,7 +98,7 @@ def main():
    
     #pptplan subparser
     parser_pptplan = subparsers.add_parser('pptplan', help='Generate a PPT from a collection generated from collectionplan')
-    parser_pptplan = subparsers.add_parser('--generate', help='Generate a PPT from a collection. Takes a collection .zip as argument')
+    parser_pptplan.add_argument('--generate', help='Generate a PPT from a collection. Takes a collection .zip as argument')
     parser_pptplan.set_defaults(func=do_pptplan)
 
     args = parser.parse_args() 

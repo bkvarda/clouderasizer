@@ -52,7 +52,18 @@ def zip_collectionplan(collection_output_folder, root_output_dir):
         logging.info("Cleaning up " + root)
     myzip.close()
     #get rid of the original files
-    
+
+#Unzips the collection and returns the path to the collection
+def unzip_collection(collection_zip,output_dir):
+    zip_file = collection_zip
+    path = ''
+    with zipfile.ZipFile(zip_file,'r',zipfile.ZIP_DEFLATED) as myzip:
+        file_list = myzip.namelist()
+        path = output_dir + '/' + os.path.dirname(file_list[0])   
+        myzip.extractall(path=output_dir)	
+    myzip.close() 
+    print path
+    return path
 
 #Executes a collectionplan
 def run_collectionplan(cm,cluster_name,collection_plan_dir,plan_name,root_output_dir,start_time,end_time):
@@ -66,11 +77,6 @@ def run_collectionplan(cm,cluster_name,collection_plan_dir,plan_name,root_output
         data = metrics.collect_metrics(cm,cluster_name,metric_list,start_time,end_time,metric['service_name'],metric['output_as'],collection_dir)
         out_fmt = metric['output_as']
     zip_collectionplan(collection_dir,root_output_dir)
-
-
-#Takes a collection file, extracts, and parses for down stream consumption
-def parse_collection(collection_zip,temp_dir):
-   print ''
 
     
         

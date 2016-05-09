@@ -42,8 +42,8 @@ def save_as_json(ts_list, output_dir):
 #reads metric data from JSON file
 def read_from_json(file):
     logging.info("Reading JSON data from " + file)
-    return json.load(file)
-
+    with open(file,'r') as json_file:
+        return json.load(json_file)
 
 #finds available metrics based on one or more search terms
 def find_metrics(cm,search_terms):

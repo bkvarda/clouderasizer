@@ -8,5 +8,10 @@
    "metric_name": "total_dfs_capacity_used_across_datanodes",
    "service_name": "HDFS",
    "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_pending_containers_across_yarn_pools",
+   "service_name": "YARN",
+   "output_as": "JSON"
   }
 ]
