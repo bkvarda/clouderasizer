@@ -10,8 +10,63 @@
    "output_as": "JSON"
   },
   {
+   "metric_name": "total_bytes_read_rate_across_datanodes",
+   "service_name": "HDFS",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_bytes_written_rate_across_datanodes",
+   "service_name": "HDFS",
+   "output_as": "JSON"
+  },
+  {
    "metric_name": "total_pending_containers_across_yarn_pools",
    "service_name": "YARN",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_allocated_containers_across_yarn_pools",
+   "service_name": "YARN",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_allocated_memory_mb_across_yarn_pools",
+   "service_name": "YARN",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_allocated_vcores_across_yarn_pools",
+   "service_name": "YARN",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_apps_running_over_1440_mins_across_yarn_pools",
+   "service_name": "YARN",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_available_memory_mb_across_yarn_pools",
+   "service_name": "YARN",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_available_vcores_across_yarn_pools",
+   "service_name": "YARN",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "queries_ingested_rate",
+   "service_name": "IMPALA",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_num_queries_rate_across_impalads",
+   "service_name": "IMPALA",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "regions_across_regionservers",
+   "service_name": "HBASE",
    "output_as": "JSON"
   }
 ]
