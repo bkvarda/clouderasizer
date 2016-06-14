@@ -1,5 +1,5 @@
 #Class for PPT plan. A PPT plan will auto generate a canned PPT based on a set of metrics that were pulled via a CollectionPlan
-import os, metrics, collectionplan
+import os, metrics, collectionplan, logging
 from pptx import Presentation
 from pptx.chart.data import ChartData
 from pptx.enum.chart import XL_CHART_TYPE
@@ -40,7 +40,6 @@ def create_impala_table_slide(prs,slide_title,data,headers):
             table.cell(i,j).text = str(col)
             table.cell(i,j).text_frame.paragraphs[0].font.name = "calibri"
             table.cell(i,j).text_frame.paragraphs[0].font.size = Pt(11)
-            print str(col)
             j+=1
         i+=1
         j=0
@@ -90,7 +89,6 @@ def create_impala_query_slide(prs,chart_series_title, categories, values):
 
 #Creates a series of slides with Impala query metrics
 def create_impala_query_slides(prs,metric):
-    print 'this was an impala slide'
     timestamps = deque()
     values = deque()
     usernames = deque()
@@ -99,7 +97,6 @@ def create_impala_query_slides(prs,metric):
     values_statements = {}
 
     for query in metric['timeSeries']:
-        print query
         data = query['data'][0]
         metadata = query['metadata']
         attributes = metadata['attributes']
@@ -289,15 +286,18 @@ def create_ppt(collection_zip,output_dir):
     
     #Instantiate presentation
     prs = Presentation()
-    
+    logging.info("Creating Presentation")    
     #create the title slide
     create_title_slide(prs)
     #create metric slide for each metric
     for metric in collection:
+        metric_name = metric['timeSeries'][0]['metadata']['metricName']
+        logging.info("Creating Slide For: " + metric_name)
         create_metric_slide(prs,metric)    
     
     #save output
     output_file = output_dir + '/' + 'test.pptx'
+    logging.info("Saving presentation at location: " + output_file)
     prs.save(output_file)
 
 
