@@ -16,7 +16,7 @@ def do_search(args):
 #Collects metrics for one ore more metrics for the specified time period 
 def do_collect(args):
     cm = connect_cm(args)    
-    metrics.collect_metrics(cm,args.cluster_name,args.metrics,args.start_time,args.end_time,args.entity_name,args.save_as,args.output_dir)
+    metrics.collect_metrics(cm,args.cluster_name,args.metrics,args.start_time,args.end_time,args.entity_name,args.query_type,args.save_as,args.output_dir)
     sys.exit(0) 
 
 def do_collectionplan(args):
@@ -83,6 +83,7 @@ def main():
     parser_collect=subparsers.add_parser('collect', help='Collect metrics')
     parser_collect.add_argument('--metrics', nargs='+',help='The names of the metrics to retrieve. Can be a space-separated list',required=True)
     parser_collect.add_argument('--entity_name',help='The service name or entity to collect the metrics for. By default it will grab at CLUSTER level',default='None')
+    parser_collect.add_argument('--query_type',help='Query type for special queries. Supported values are IMPALA_QUERY or None',default='None')
     parser_collect.add_argument('--save_as',help='The format to save the metrics in - JSON, CSV, or NONE. Default is NONE',default='None')
     parser_collect.set_defaults(func=do_collect)
     

@@ -7,43 +7,7 @@ from pptx.util import Inches
 from pptx.util import Pt
 from collections import deque, Counter, OrderedDict
 
-def create_impala_table_slide(prs,slide_title,data,headers):
-    # change title and properties
-
-    slide = prs.slides.add_slide(prs.slide_layouts[5])
-
-    title = slide.shapes.title
-    title.text = slide_title
-    title.text_frame.paragraphs[0].font.name = "calibri"
-    title.text_frame.paragraphs[0].font.size = Pt(28)
-    shapes = slide.shapes
-    rows = len(data) + 1
-    cols = len(headers)
-    left = Inches(2.0)
-    top = Inches(1.5)
-    width = Inches(8.0)
-    height = Inches(0.8)
-    table = shapes.add_table(rows, cols, left, top, width, height).table
-    # set column widths
-    table.columns[0].width = Inches(2.0)
-    table.columns[1].width = Inches(4.0)
-
-    # write column headings
-    for i in range(cols):
-        table.cell(0,i).text = headers[i]
-        
-    # write body cells
-    i = 1
-    j = 0
-    for row in data:
-        for col in row:
-            table.cell(i,j).text = str(col)
-            table.cell(i,j).text_frame.paragraphs[0].font.name = "calibri"
-            table.cell(i,j).text_frame.paragraphs[0].font.size = Pt(11)
-            print str(col)
-            j+=1
-        i+=1
-        j=0
+def create_impala_table_slide(prs,title,categories,values):
     return
 
 def create_impala_query_slide(prs,chart_series_title, categories, values):
@@ -66,7 +30,7 @@ def create_impala_query_slide(prs,chart_series_title, categories, values):
     # add chart to slide --------------------
     x, y, cx, cy = Inches(0.5), Inches(1.4), Inches(9), Inches(6.0)
     chart =  slide.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, x, y, cx, cy, chart_data)
-    chart.chart_style = 10
+
     # sets chart plot to all be the same color (default in PPT is all different colors by category)
     plot = chart.chart.plots[0]
     plot.vary_by_categories = True
@@ -159,9 +123,8 @@ def create_impala_query_slides(prs,metric):
 
     #top 10 queries by duration
     ordered_queries = OrderedDict(reversed(sorted(values_statements.items(), key=lambda x: x[0]))).items()
-    top_10_queries = ordered_queries[0:10]
-    headers = deque(["Duration(ms)","Query"])
-    create_impala_table_slide(prs,"Top 10 Queries By Duration",top_10_queries,headers)
+    print ordered_queries
+    print ordered_queries[2]
     return
 
 #Create a metric slide

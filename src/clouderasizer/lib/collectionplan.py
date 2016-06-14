@@ -74,7 +74,7 @@ def run_collectionplan(cm,cluster_name,collection_plan_dir,plan_name,root_output
     for metric in plan:
         metric_list = list()
         metric_list.append(metric['metric_name'])
-        data = metrics.collect_metrics(cm,cluster_name,metric_list,start_time,end_time,metric['service_name'],metric['output_as'],collection_dir)
+        data = metrics.collect_metrics(cm,cluster_name,metric_list,start_time,end_time,metric['service_name'],metric['query_type'],metric['output_as'],collection_dir)
         out_fmt = metric['output_as']
     zip_collectionplan(collection_dir,root_output_dir)
 

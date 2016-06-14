@@ -64,12 +64,17 @@ def find_metrics(cm,search_terms):
             print 
 
 #collects metrics and executes output function based on output_format input.
-def collect_metrics(cm,cluster_name,metrics,start_date,end_date,service_name,output_format,output_dir):
+def collect_metrics(cm,cluster_name,metrics,start_date,end_date,service_name,query_type,output_format,output_dir):
     logging.info("Collecting metrics for the following: " + str(metrics))
     metric_string = ','.join(metrics)
     select_string = 'SELECT ' + metric_string + ' WHERE clusterName = ' + '"'+ cluster_name +'"'
     if service_name!='None':
-        select_string = select_string + ' AND serviceName = ' + '"'+ service_name + '"'
+        #Case - IMPALA_QUERY for querying Impala Query stats
+        if query_type == 'IMPALA_QUERY' and service_name =='IMPALA' :
+            select_string = 'SELECT ' + metric_string + ' FROM IMPALA_QUERIES WHERE serviceName = ' + '"'+ service_name + '"'
+        #Otherwise - just a "normal" query
+        else:
+            select_string = select_string + ' AND serviceName = ' + '"'+ service_name + '"'
     logging.info("Query string for metric collection was: " + select_string)
     result = cm.query_timeseries(select_string,start_date,end_date)
     ts_list = result[0]
