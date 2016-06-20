@@ -291,6 +291,7 @@ def create_ppt(collection_zip,output_dir):
     create_title_slide(prs)
     #create metric slide for each metric
     for metric in collection:
+       # metric = metric['items'][0]
         metric_name = metric['timeSeries'][0]['metadata']['metricName']
         logging.info("Creating Slide For: " + metric_name)
         create_metric_slide(prs,metric)    

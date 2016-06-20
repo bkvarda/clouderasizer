@@ -1,4 +1,4 @@
-import json, logging
+import json, logging, time, datetime
 from cm_api.api_client import ApiResource
 from collections import deque
 
@@ -66,16 +66,22 @@ def find_metrics(cm,search_terms):
 #collects metrics and executes output function based on output_format input.
 def collect_metrics(cm,cluster_name,metrics,start_date,end_date,service_name,query_type,output_format,output_dir):
     logging.info("Collecting metrics for the following: " + str(metrics))
+    #Check the type of the date variables
+    if type(start_date) is str:
+        start_date = datetime.datetime.strptime(start_date,'%m/%d/%Y') 
+    if type(end_date) is str:
+        end_date = datetime.datetime.strptime(end_date,'%m/%d/%Y')
+
     metric_string = ','.join(metrics)
     select_string = 'SELECT ' + metric_string + ' WHERE clusterName = ' + '"'+ cluster_name +'"'
     if service_name!='None':
         #Case - IMPALA_QUERY for querying Impala Query stats
-        if query_type == 'IMPALA_QUERY' and service_name =='IMPALA' :
+        if query_type == 'IMPALA_QUERY':
             select_string = 'SELECT ' + metric_string + ' FROM IMPALA_QUERIES WHERE serviceName = ' + '"'+ service_name + '"'
         #Otherwise - just a "normal" query
         else:
             select_string = select_string + ' AND serviceName = ' + '"'+ service_name + '"'
-    logging.info("Query string for metric collection was: " + select_string)
+    logging.info("Query string for metric collection was: " + select_string + " Start date was: " + str(start_date) + " End date was: " + str(end_date))
     result = cm.query_timeseries(select_string,start_date,end_date)
     ts_list = result[0]
     #We now have our raw metric data, fork off depending on output format

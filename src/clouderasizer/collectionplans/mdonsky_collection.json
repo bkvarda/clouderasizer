@@ -1,0 +1,92 @@
+[
+  {
+   "metric_name": "total_cpu_system_rate_across_hosts",
+   "service_name": "None",
+   "query_type": "None",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_dfs_capacity_used_across_datanodes",
+   "service_name": "HDFS-1",
+   "query_type": "None",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_bytes_read_rate_across_datanodes",
+   "query_type": "None",
+   "service_name": "HDFS-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_bytes_written_rate_across_datanodes",
+   "query_type": "None",
+   "service_name": "HDFS-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_pending_containers_across_yarn_pools",
+   "query_type": "None",
+   "service_name": "YARN-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_allocated_containers_across_yarn_pools",
+   "query_type": "None",
+   "service_name": "YARN-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_allocated_memory_mb_across_yarn_pools",
+   "query_type": "None",
+   "service_name": "YARN-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_allocated_vcores_across_yarn_pools",
+   "query_type": "None",
+   "service_name": "YARN-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_apps_running_over_1440_mins_across_yarn_pools",
+   "query_type": "None",
+   "service_name": "YARN-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_available_memory_mb_across_yarn_pools",
+   "query_type": "None",
+   "service_name": "YARN-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_available_vcores_across_yarn_pools",
+   "query_type": "None",
+   "service_name": "YARN-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "queries_ingested_rate",
+   "query_type": "None",
+   "service_name": "IMPALA-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "total_num_queries_rate_across_impalads",
+   "query_type": "None",
+   "service_name": "IMPALA-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "query_duration",
+   "query_type": "IMPALA_QUERY",
+   "service_name": "IMPALA-1",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "regions_across_regionservers",
+   "query_type": "None",
+   "service_name": "HBASE-1",
+   "output_as": "JSON"
+  }
+]
