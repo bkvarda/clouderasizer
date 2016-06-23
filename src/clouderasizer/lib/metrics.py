@@ -77,10 +77,10 @@ def collect_metrics(cm,cluster_name,metrics,start_date,end_date,service_name,que
     if service_name!='None':
         #Case - IMPALA_QUERY for querying Impala Query stats
         if query_type == 'IMPALA_QUERY':
-            select_string = 'SELECT ' + metric_string + ' FROM IMPALA_QUERIES WHERE serviceName = ' + '"'+ service_name + '"'
+            select_string = 'SELECT ' + metric_string + ' FROM IMPALA_QUERIES'
         #Otherwise - just a "normal" query
         else:
-            select_string = select_string + ' AND serviceName = ' + '"'+ service_name + '"'
+            select_string = select_string + ' AND serviceType = ' + '"'+ service_name + '"'
     logging.info("Query string for metric collection was: " + select_string + " Start date was: " + str(start_date) + " End date was: " + str(end_date))
     result = cm.query_timeseries(select_string,start_date,end_date)
     ts_list = result[0]
