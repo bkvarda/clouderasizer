@@ -1,4 +1,5 @@
 import json, logging, time, datetime
+from urllib2 import URLError
 from cm_api.api_client import ApiResource
 from collections import deque
 
@@ -27,7 +28,7 @@ def print_data(ts_list):
 
 #saves data as CSV
 def save_as_csv(data,output_dir):
-    print ''
+    print 'CSV output currently not supported'
 
 #saves data as JSON
 def save_as_json(ts_list, output_dir):
@@ -43,25 +44,32 @@ def save_as_json(ts_list, output_dir):
 def read_from_json(file):
     logging.info("Reading JSON data from " + file)
     with open(file,'r') as json_file:
-        return json.load(json_file)
+        try:
+            return json.load(json_file)
+        except ValueError:
+            logging.error("Unable to parse " + file + ". Invalid JSON")
+            raise
 
 #finds available metrics based on one or more search terms
 def find_metrics(cm,search_terms):
-    metrics =  cm.get_metric_schema()
-    print ''
-    print ''
-    for metric in metrics:
-        if all(term.lower() in metric.displayName.lower() for term in search_terms):
-            print "Metric Name: " + metric.name
-            print "Display Name: " + metric.displayName
-            print "Description: " + metric.description
-            print "Is Counter: " + str(metric.isCounter)
-            print "Unit Numerator: " + metric.unitNumerator
-            print "Unit Denominator: " + str(metric.unitDenominator)
-            print "Aliases: " + str(metric.aliases)
-            print "Sources: " + str(metric.sources)
-            print "____________________________________________"
-            print 
+    try:
+        metrics =  cm.get_metric_schema()
+        print ''
+        print ''
+        for metric in metrics:
+            if all(term.lower() in metric.displayName.lower() for term in search_terms):
+                print "Metric Name: " + metric.name
+                print "Display Name: " + metric.displayName
+                print "Description: " + metric.description
+                print "Is Counter: " + str(metric.isCounter)
+                print "Unit Numerator: " + metric.unitNumerator
+                print "Unit Denominator: " + str(metric.unitDenominator)
+                print "Aliases: " + str(metric.aliases)
+                print "Sources: " + str(metric.sources)
+                print "____________________________________________"
+                print
+    except URLError:
+        print 'Unable to reach CM. Check your configuration and make sure it is reachable'
 
 #collects metrics and executes output function based on output_format input.
 def collect_metrics(cm,cluster_name,metrics,start_date,end_date,service_name,query_type,output_format,output_dir):

@@ -1,4 +1,4 @@
-#Class for PPT plan. A PPT plan will auto generate a canned PPT based on a set of metrics that were pulled via a CollectionPlan
+#Class for PPT plan. A PPT plan will auto generate a canned PPT based on a set of metrics that were pulled via a CollectionPlan or from the CM API directly
 import os, metrics, collectionplan, logging
 from pptx import Presentation
 from pptx.chart.data import ChartData
@@ -10,7 +10,7 @@ from collections import deque, Counter, OrderedDict
 def create_impala_table_slide(prs,slide_title,data,headers):
     # change title and properties
 
-    slide = prs.slides.add_slide(prs.slide_layouts[5])
+    slide = prs.slides.add_slide(prs.slide_layouts[12])
 
     title = slide.shapes.title
     title.text = slide_title
@@ -26,7 +26,7 @@ def create_impala_table_slide(prs,slide_title,data,headers):
     table = shapes.add_table(rows, cols, left, top, width, height).table
     # set column widths
     table.columns[0].width = Inches(2.0)
-    table.columns[1].width = Inches(4.0)
+    table.columns[1].width = Inches(8.0)
 
     # write column headings
     for i in range(cols):
@@ -48,7 +48,7 @@ def create_impala_table_slide(prs,slide_title,data,headers):
 def create_impala_query_slide(prs,chart_series_title, categories, values):
     # change title and properties
    
-    slide = prs.slides.add_slide(prs.slide_layouts[5])
+    slide = prs.slides.add_slide(prs.slide_layouts[12])
 
     title = slide.shapes.title
     title.text = chart_series_title
@@ -63,7 +63,7 @@ def create_impala_query_slide(prs,chart_series_title, categories, values):
 
 
     # add chart to slide --------------------
-    x, y, cx, cy = Inches(0.5), Inches(1.4), Inches(9), Inches(6.0)
+    x, y, cx, cy = Inches(2.25), Inches(1.4), Inches(9), Inches(6.0)
     chart =  slide.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, x, y, cx, cy, chart_data)
     chart.chart_style = 10
     # sets chart plot to all be the same color (default in PPT is all different colors by category)
@@ -157,24 +157,34 @@ def create_impala_query_slides(prs,metric):
     #top 10 queries by duration
     ordered_queries = OrderedDict(reversed(sorted(values_statements.items(), key=lambda x: x[0]))).items()
     top_10_queries = ordered_queries[0:10]
-    headers = deque(["Duration(ms)","Query"])
-    create_impala_table_slide(prs,"Top 10 Queries By Duration",top_10_queries,headers)
+    top_10_queries_min = deque()
+    #convert ms to min
+    for row in top_10_queries:
+        duration = row[0]/1000/60
+        quer = row[1]
+        top_10_queries_min.append((duration,quer))
+    headers = deque(["Duration(min)","Query"])
+    create_impala_table_slide(prs,"Top 10 Queries By Duration",top_10_queries_min,headers)
     return
 
 #Create a metric slide
 def create_metric_slide(prs,metric):
     #metric info
+    metric_name = metric['timeSeries'][0]['metadata']['metricName']
     category =  metric['timeSeries'][0]['metadata']['attributes']['category']
+    print metric_name
     #determine if service, and send to IMPALA_QUERY function if an IMPALA_QUERY slide
     if category == 'SERVICE':
         service_name = metric['timeSeries'][0]['metadata']['attributes']['serviceDisplayName']
-    elif category == 'IMPALA_QUERY':
+    elif category == 'IMPALA_QUERY' and metric_name == 'query_duration':
         create_impala_query_slides(prs,metric)
+        return
+    elif category == 'IMPALA_QUERY' and metric_name == 'hdfs_average_scan_range':
         return
     else:
         service_name = 'Cluster'
 
-    metric_name = metric['timeSeries'][0]['metadata']['metricName']
+    #metric_name = metric['timeSeries'][0]['metadata']['metricName']
     
     formatted_metric_name = ''
     #format the metric name and capitalize first letters
@@ -185,22 +195,35 @@ def create_metric_slide(prs,metric):
     metric_name = formatted_metric_name
 
     value_access_name = 'max'
+    
          
     unit_type = metric['timeSeries'][0]['metadata']['unitNumerators'][0]
     numerator = metric['timeSeries'][0]['metadata']['unitNumerators'][0]
     denominators = metric['timeSeries'][0]['metadata']['unitDenominators']
-    
     timestamps = deque()
     values = deque()
-    slide = prs.slides.add_slide(prs.slide_layouts[5])
-    for point in metric['timeSeries'][0]['data']:
+    points = ''
+    if not metric['timeSeries'][0]['data']:
+        points = metric['timeSeries'][1]['data']
+    else:
+        points = metric['timeSeries'][0]['data']
+    slide = prs.slides.add_slide(prs.slide_layouts[12])
+    for point in points:
         formatted_timestamp = point['timestamp'].split("T")
         timestamps.append(formatted_timestamp[0])
-        if unit_type == 'bytes':
-            #value_in_mb = float(point['aggregateStatistics']['max'])/(1024*1024))
-            value_in_gb = float(point['aggregateStatistics'][value_access_name])/(1024*1024*1024)
-            values.append(value_in_gb)
-            numerator = 'gigabytes' 
+        #max value doesn't exist for data points in SUM or INTEGRAL statistics, need to use value key
+        if point['type'] == 'CALCULATED':
+            values.append(point['value'])
+        elif unit_type == 'bytes':
+            #Read and write metrics in MB, otherwise in gigabytes
+            if 'read' in metric_name.lower() or 'writ' in metric_name.lower():
+                value_in_mb = float(point['aggregateStatistics'][value_access_name])/(1024*1024)
+                values.append(value_in_mb)
+                numerator = 'megabytes'
+            else:
+                value_in_gb = float(point['aggregateStatistics'][value_access_name])/(1024*1024*1024) 
+                values.append(value_in_gb)
+                numerator = 'gigabytes'
         else:
             values.append(point['aggregateStatistics'][value_access_name])
     
@@ -226,7 +249,7 @@ def create_metric_slide(prs,metric):
     
 
     # add chart to slide --------------------
-    x, y, cx, cy = Inches(0.5), Inches(1.4), Inches(9), Inches(6.0)
+    x, y, cx, cy = Inches(2.25), Inches(1.4), Inches(9), Inches(6.0)
     chart =  slide.shapes.add_chart(XL_CHART_TYPE.LINE, x, y, cx, cy, chart_data)
     
     # sets chart plot to all be the same color (default in PPT is all different colors by category)
@@ -251,16 +274,42 @@ def create_metric_slide(prs,metric):
     return
 
 #Create a service slide
-def create_service_slide():
+def create_section_slide(prs,service_name):
+    section_slide_layout = prs.slide_layouts[24]
+    slide = prs.slides.add_slide(section_slide_layout)
+    title = slide.shapes.title
+    subtitle = slide.placeholders[1]
+    title.text = service_name + " " + "Statistics"
+    subtitle.text = "A look at stats relevant to " + service_name
     return
 
 #Create a summary slide
-def create_summary_slide():
+def create_summary_slide(prs):
+    section_slide_layout = prs.slide_layouts[8]
+    slide = prs.slides.add_slide(section_slide_layout)
+    title = slide.shapes.title
+    title.text = "Summary"
+    return
+
+#Create reccomendation slide
+def create_rec_slide(prs):
+    section_slide_layout = prs.slide_layouts[8]
+    slide = prs.slides.add_slide(section_slide_layout)
+    title = slide.shapes.title
+    title.text = "Reccomendations"
+    return 
+
+#Create end slide
+def create_end_slide(prs):
+    section_slide_layout = prs.slide_layouts[26]
+    slide = prs.slides.add_slide(section_slide_layout)
+    title = slide.shapes.title
+    title.text = "The End"
     return
 
 #Create a title slide
 def create_title_slide(prs):
-    title_slide_layout = prs.slide_layouts[0]
+    title_slide_layout = prs.slide_layouts[6]
     slide = prs.slides.add_slide(title_slide_layout)
     title = slide.shapes.title
     subtitle = slide.placeholders[1]
@@ -282,25 +331,52 @@ def create_ppt(collection_zip,output_dir):
     
     for file in os.listdir(collection_dir):
         full_file_path = collection_dir + '/' + file
-        collection.append(metrics.read_from_json(full_file_path))
-    
+        try:
+            collection.append(metrics.read_from_json(full_file_path))
+        except ValueError:
+            logging.warning("Skipping file " + file + " as it could not be parsed")
+            continue
+    #Used to keep track of sections
+    previous_section = 'None'   
     #Instantiate presentation
-    prs = Presentation()
+    prs = Presentation("./pptplan/Template.pptx")
     logging.info("Creating Presentation")    
     #create the title slide
     create_title_slide(prs)
     #create metric slide for each metric
     for metric in collection:
-       #structure is different depending on whether it was pulled using CM API library for python or directly from CM API (IE using CURL)
+        #structure is different depending on whether it was pulled using CM API library for python or directly from CM API (IE using CURL)
         if 'items' in metric:
             metric = metric['items'][0]
-
+        #if an empty list, skip
+        if len(metric['timeSeries']) == 0:
+            logging.warning("Skipped empty metric with payload: " + str(metric))
+            continue
+        #used to determine which section a metric fits in 
+        category =  metric['timeSeries'][0]['metadata']['attributes']['category']
+        if category == 'SERVICE':
+            service_name = metric['timeSeries'][0]['metadata']['attributes']['serviceDisplayName']
+        elif category == 'IMPALA_QUERY':
+            service_name = 'IMPALA'            
+        else:
+            service_name = 'GENERAL'
+        #if the section is different than the last section, create a section slide
+        if service_name.lower() != previous_section.lower():
+            create_section_slide(prs,service_name)
+            previous_section = service_name
+        #now create the slide for the metric 
         metric_name = metric['timeSeries'][0]['metadata']['metricName']
         logging.info("Creating Slide For: " + metric_name)
         create_metric_slide(prs,metric)    
     
+    #create summary slide, reccomendation slide, and ending slide
+    create_summary_slide(prs)
+    create_rec_slide(prs)
+    create_end_slide(prs)
+    
     #save output
-    output_file = output_dir + '/' + 'test.pptx'
+    output_name = os.path.basename(collection_zip).split(".zip")[0]
+    output_file = output_dir + '/' + output_name + '.pptx'
     logging.info("Saving presentation at location: " + output_file)
     prs.save(output_file)
 

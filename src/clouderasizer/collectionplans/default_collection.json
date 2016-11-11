@@ -66,19 +66,25 @@
    "output_as": "JSON"
   },
   {
-   "metric_name": "queries_ingested_rate",
+   "metric_name": "integral(queries_ingested_rate)",
    "query_type": "None",
    "service_name": "IMPALA",
    "output_as": "JSON"
   },
   {
-   "metric_name": "total_num_queries_rate_across_impalads",
+   "metric_name": "integral(total_num_queries_rate_across_impalads)",
    "query_type": "None",
    "service_name": "IMPALA",
    "output_as": "JSON"
   },
   {
    "metric_name": "query_duration",
+   "query_type": "IMPALA_QUERY",
+   "service_name": "IMPALA",
+   "output_as": "JSON"
+  },
+  {
+   "metric_name": "hdfs_average_scan_range",
    "query_type": "IMPALA_QUERY",
    "service_name": "IMPALA",
    "output_as": "JSON"

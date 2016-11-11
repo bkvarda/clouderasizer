@@ -62,7 +62,7 @@ def unzip_collection(collection_zip,output_dir):
         path = output_dir + '/' + os.path.dirname(file_list[0])   
         myzip.extractall(path=output_dir)	
     myzip.close() 
-    print path
+    
     return path
 
 #Executes a collectionplan

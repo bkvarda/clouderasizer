@@ -22,3 +22,6 @@ capycityplanr/temp/*
 *.sh
 src/clouderasizer/output/*
 src/clouderasizer/output/*/*
+*.pptx
+*.DS_Store*
+**.DS_Store**
