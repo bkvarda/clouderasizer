@@ -4,10 +4,10 @@
 Tool used to both collect metrics and programatically build PPT reports based on a collection of metrics. Primary use has changed to focus more on the reporting aspect. 
 
 ####Installation
-Working on making this easier. Current dependencies can be installed using pip:
+Working on making this easier. Current dependencies can be installed using pip [Note: python-pptx after 0.5.8 broke some APIs that are used]:
 ```
 pip install cm_api
-pip install python-pptx 
+pip install python-pptx==0.5.8
 ```
 
 ####Options
