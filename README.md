@@ -1,21 +1,21 @@
 #### Multipurpose tool for discovering and collecting metrics from Cloudera Manager Hadoop clusters.
 
-####Usage
+#### Usage
 Tool used to both collect metrics and programatically build PPT reports based on a collection of metrics. Primary use has changed to focus more on the reporting aspect. 
 
-####Installation
+#### Installation
 Working on making this easier. Current dependencies can be installed using pip [Note: python-pptx after 0.5.8 broke some APIs that are used]:
 ```
 pip install cm_api
 pip install python-pptx==0.5.8
 ```
 
-####Options
+#### Options
 For full list of options, run:
 ```
 python clouderasizer.py -h
 ```
-####Metric Discovery
+#### Metric Discovery
 To search for available Cloudera Manager  metrics, run the following command with a list of search terms separated by spaces:
 ```
 python clouderasizer.py metrics --search hbase region server
@@ -26,7 +26,7 @@ SELECT some_metric WHERE serviceType = 'SOME_SERVICE' AND clusterName = 'SOME_NA
 ```
 The only exclusion currently is a query of all metrics to the 'IMPALA_QUERIES' table in CM, in which case you would use the --query_type IMPALA to grab metrics. Time frame of a query can be specified using the --start_time and --end_time flags. By default, a time period of 1 year is used. 
 
-####Metric Collection
+#### Metric Collection
 Once you have decided on a metric or metrics you are interested in, you can collect it:
 ```
 clouderasizer.py collect --metrics some_metric_name
@@ -41,7 +41,7 @@ clouderasizer.py collect --metrics some_metric --entity_name HDFS --save_as JSON
 ```
 Numerous metrics can be collected in the same command. I can't think of a great reason to do this and haven't tested it much so use at your own risk. 
 
-####CollectionPlans
+#### CollectionPlans
 A collectionplan is a file that describes a series of metrics that should be collected together. It allows for a structured definition of metrics to collect but also the ability to have different metric collection bundles for different purposes. As an example, maybe you have a general plan for collecting from a variety of services for a general health check, or perhaps maybe you have collection plans that are more detailed for specific services. An example collectionplan looks like this:
 ```
 [
@@ -87,7 +87,7 @@ clouderasizer.py collectionplan --execute some_plan.json
 ```
 Note that some_plan.json is not a relative path, it is the name of the plan in the collectionplan directory. When a collectionplan is executed, the resulting output is a zip file with the name of the plan plus the date and time. By default, it is saved in the output directory but that is configurable using a flag or in clouderasizer.conf. The collectionplan output can be leveraged to create a PPT with a single command. 
 
-####PPT Generation
+#### PPT Generation
 This tool can build PowerPoint presentations automatically given a zip file of metrics. The requirements are:
 - Input must be a .zip file containing a folder which contains individual metrics as single files. All individual metrics must be for a single entity.
 - Metrics need to be in JSON format, a single file containing a single metric. Metrics must be the same as those supported by the 'collect' option using this CLI tool. 
