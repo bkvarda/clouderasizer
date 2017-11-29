@@ -4,7 +4,7 @@ from cm_api.api_client import ApiResource
 
 #Connects to CM using provided (or configured) credentials and returns the Api object
 def connect_cm(args):
-    cm = ApiResource(args.cm_host, username=args.username, password=args.password)
+    cm = ApiResource(args.cm_host, username=args.username, password=args.password, use_tls=args.use_tls)
     return cm
 
 #Searches against available CM metrics bases on a series of terms
@@ -56,6 +56,7 @@ def main():
     username = configuration.cloudera_username
     password = configuration.cloudera_password
     cluster_name = configuration.cloudera_cluster_name
+    use_tls = configuration.cloudera_use_tls
     current_time = datetime.datetime.fromtimestamp(time.time())
     last_year = datetime.datetime.fromtimestamp(time.time()-31536000)
     collectionplan_dir = configuration.collectionplan_dir
@@ -72,6 +73,7 @@ def main():
     parser.add_argument('--output_dir',help="The full path of the output directory", default=output_dir)
     parser.add_argument('--start_time',help='The start time to collect from',default=last_year)
     parser.add_argument('--end_time',help='The end time to collect until',default=current_time)
+    parser.add_argument('--use_tls',help='The true/false boolean for TLS/SSL connection',default=cloudera_use_tls)
     subparsers = parser.add_subparsers()
    
     #metrics subparser    
