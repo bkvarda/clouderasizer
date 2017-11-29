@@ -73,7 +73,7 @@ def main():
     parser.add_argument('--output_dir',help="The full path of the output directory", default=output_dir)
     parser.add_argument('--start_time',help='The start time to collect from',default=last_year)
     parser.add_argument('--end_time',help='The end time to collect until',default=current_time)
-    parser.add_argument('--use_tls',help='The true/false boolean for TLS/SSL connection',default=cloudera_use_tls)
+    parser.add_argument('--use_tls',help='The true/false boolean for TLS/SSL connection',default=use_tls)
     subparsers = parser.add_subparsers()
    
     #metrics subparser    
