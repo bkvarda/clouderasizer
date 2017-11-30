@@ -12,6 +12,7 @@ class Config:
         self.cloudera_cluster_name=Config.get('Cloudera','ClusterName')
         self.cloudera_username=Config.get('Cloudera','UserName')
         self.cloudera_password=Config.get('Cloudera','Password')
+        self.cloudera_use_tls=Config.get('Cloudera','UseTLS')
         self.checkDirectories()
     def checkDirectories(self):
         if not os.path.isdir(self.temp_dir):
